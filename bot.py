@@ -4,6 +4,10 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
 from aiogram import F
 
+import datetime
+
+import backtest as bt
+
 # Включаем логирование, чтобы не пропустить важные сообщения
 logging.basicConfig(level=logging.INFO)
 # Объект бота
@@ -27,7 +31,12 @@ async def choose_company(message: types.Message):
     
 @dp.message(F.text.lower() == "aapl")
 async def with_puree(message: types.Message):
-    await message.reply("База")
+    tod = datetime.datetime.now()
+    d = datetime.timedelta(days = 24)
+    a = tod - d
+    model = bt.load_model("AAPL")
+    await message.reply(str(bt.back_test(model, "AAPL", str(a)[:10], str(datetime.date.today()))))
+    #await message.reply("База")
 
 @dp.message(Command("Predict"))
 async def predict(message: types.Message):
